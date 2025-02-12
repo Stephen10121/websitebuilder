@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -25,9 +26,24 @@ func main() {
 				dbx.Params{"path": path, "httpMethod": e.Request.Method},
 			)
 			if err != nil {
-				return e.String(http.StatusNotFound, "Page not found.")
+				return e.Error(http.StatusNotFound, "Page not found.", nil)
 			} else {
-				return e.String(http.StatusOK, record.GetString("serve"))
+				serveType := record.GetString("serve")
+				switch serveType {
+				case "STRING":
+					return e.String(http.StatusOK, record.GetString("stringMessage"))
+				case "FILE":
+					return e.FileFS(os.DirFS("./files"), record.GetString("fileServePath"))
+				case "JSON":
+					var result map[string]interface{}
+					err = record.UnmarshalJSONField("jsonMessage", &result)
+					if err != nil {
+						return e.Error(http.StatusNotFound, "Page not found.", nil)
+					}
+					return e.JSON(http.StatusOK, result)
+				default:
+					return e.Error(http.StatusNotFound, "Page not found.", nil)
+				}
 			}
 		})
 
