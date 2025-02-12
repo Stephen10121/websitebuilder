@@ -18,6 +18,13 @@ func RemoveTrailingSlash(path string) string {
 	return path
 }
 
+func RemoveFirstSlash(path string) string {
+	if path[0:1] == "/" && len(path) > 1 {
+		return path[1:]
+	}
+	return path
+}
+
 func getString(record *core.Record, e *core.RequestEvent) error {
 	return e.String(http.StatusOK, record.GetString("stringMessage"))
 }

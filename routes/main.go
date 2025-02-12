@@ -2,7 +2,7 @@ package routes
 
 import (
 	"myapp/funcs"
-	"net/http"
+	"os"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -21,7 +21,7 @@ func BaseRoute(se *core.ServeEvent, app *pocketbase.PocketBase, registry *templa
 		)
 
 		if err != nil {
-			return e.Error(http.StatusNotFound, "Page not found.", nil)
+			return e.FileFS(os.DirFS("./files/"), funcs.RemoveFirstSlash(path))
 		} else {
 			return funcs.ReturnCorrectResponse(record, e, registry)
 		}
