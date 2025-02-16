@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/template"
 )
@@ -76,4 +77,32 @@ func ReturnCorrectResponse(record *core.Record, e *core.RequestEvent, registry *
 	default:
 		return e.Error(http.StatusNotFound, "Page not found.", nil)
 	}
+}
+
+func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e *core.RequestEvent) error {
+	records, _ := app.FindAllRecords("routes")
+	newRecords := []any{}
+	for _, record := range records {
+		newRecord := map[string]any{
+			"id":              record.Id,
+			"path":            record.GetString("path"),
+			"serve":           record.GetString("serve"),
+			"jsonMessage":     record.GetString("jsonMessage"),
+			"stringMessage":   record.GetString("stringMessage"),
+			"templateMessage": record.GetString("templateMessage"),
+			"fileServePath":   record.GetString("fileServePath"),
+			"httpMethod":      record.GetString("httpMethod"),
+		}
+		newRecords = append(newRecords, newRecord)
+	}
+
+	data := map[string]any{"records": newRecords}
+
+	html, err := registry.LoadFiles("./admin/index.html").Render(data)
+
+	if err != nil {
+		return e.Error(http.StatusNotFound, "Page not found.", nil)
+	}
+
+	return e.HTML(http.StatusOK, html)
 }
