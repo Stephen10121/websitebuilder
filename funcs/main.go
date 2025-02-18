@@ -97,7 +97,10 @@ func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e 
 		newRecords = append(newRecords, newRecord)
 	}
 
-	data := map[string]any{"records": newRecords}
+	data := map[string]any{
+		"records": newRecords,
+		"files":   FetchAllPublicFiles(),
+	}
 
 	html, err := registry.LoadFiles("./admin/index.html").Render(data)
 

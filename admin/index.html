@@ -14,39 +14,46 @@
                 <label for="showModal{{ $element.id }}" class="closeModal">
                 </label>
                 <section class="modalData">
-                    <p class="title">Edit Data for "{{ $element.path }}" path</p>
-                    <form class="editForm" method="POST" action="/admin/path/{{ $element.id }}">
-                        <p class="titleLabel">HTTP Method</p>
-                        <div class="tabs">
-                            <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "GET" }}checked{{ end }} value="GET" /><p>GET</p></label>
-                            <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "POST" }}checked{{ end }} value="POST" /><p>POST</p></label>
-                            <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "PUT" }}checked{{ end }} value="PUT" /><p>PUT</p></label>
-                            <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "DELETE" }}checked{{ end }} value="DELETE" /><p>DELETE</p></label>
-                        </div>
-                        <p class="titleLabel">Serve Type</p>
-                        <div class="tabs">
-                            <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "FILE" }}checked{{ end }}value="FILE" /><p>File</p></label>
-                            <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "JSON" }}checked{{ end }} value="JSON" /><p>JSON</p></label>
-                            <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "STRING" }}checked{{ end }} value="STRING" /><p>String</p></label>
-                            <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "TEMPLATE" }}checked{{ end }} value="TEMPLATE" /><p>Template</p></label>
-                        </div>
-                        <div class="selectors">
-                            <label class="jsonMessage">
-                                <p class="titleLabel">JSON Message</p>
-                                <textarea name="jsonMessage" title="JSON Message">{{ $element.jsonMessage }}</textarea>
-                            </label>
-                            <label class="stringMessage">
-                                <p class="titleLabel">String Message</p>
-                                <textarea name="stringMessage" title="String Message">{{ $element.stringMessage }}</textarea>
-                            </label>
-                            <label class="templateMessage">
-                                <p class="titleLabel">Template Config</p>
-                                <textarea name="templateMessage" title="Template Config">{{ $element.templateMessage }}</textarea>
-                            </label>
-                            <label class="fileServePath">
-                                <p class="titleLabel">File Serve Config</p>
-                                <textarea name="fileServePath" title="File Serve Config">{{ $element.fileServePath }}</textarea>
-                            </label>
+                    <div>
+                        <p class="title">Edit Data for "{{ $element.path }}" path</p>
+                        <form class="editForm" method="POST" action="/admin/path/{{ $element.id }}">
+                            <p class="titleLabel">HTTP Method</p>
+                            <div class="tabs">
+                                <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "GET" }}checked{{ end }} value="GET" /><p>GET</p></label>
+                                <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "POST" }}checked{{ end }} value="POST" /><p>POST</p></label>
+                                <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "PUT" }}checked{{ end }} value="PUT" /><p>PUT</p></label>
+                                <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "DELETE" }}checked{{ end }} value="DELETE" /><p>DELETE</p></label>
+                            </div>
+                            <p class="titleLabel">Serve Type</p>
+                            <div class="tabs">
+                                <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "FILE" }}checked{{ end }} value="FILE" /><p>File</p></label>
+                                <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "JSON" }}checked{{ end }} value="JSON" /><p>JSON</p></label>
+                                <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "STRING" }}checked{{ end }} value="STRING" /><p>String</p></label>
+                                <label title="Choose Serving Method"><input type="radio" name="serve" class="sr-only" {{ if eq .serve "TEMPLATE" }}checked{{ end }} value="TEMPLATE" /><p>Template</p></label>
+                            </div>
+                            <div class="selectors">
+                                <label class="jsonMessage">
+                                    <p class="titleLabel">JSON Message</p>
+                                    <textarea name="jsonMessage" title="JSON Message">{{ $element.jsonMessage }}</textarea>
+                                </label>
+                                <label class="stringMessage">
+                                    <p class="titleLabel">String Message</p>
+                                    <textarea name="stringMessage" title="String Message">{{ $element.stringMessage }}</textarea>
+                                </label>
+                                <label class="templateMessage">
+                                    <p class="titleLabel">Template Config</p>
+                                    <textarea name="templateMessage" title="Template Config">{{ $element.templateMessage }}</textarea>
+                                </label>
+                                <label class="fileServePath">
+                                    <p class="titleLabel">Choose which file to serve</p>
+                                    <select name="fileServePath" class="fileChoose">
+                                        <option value=""></option>
+                                        {{ range $index, $element := $.files }}
+                                            <option value="{{$element}}">{{$element}}</option>
+                                        {{ end }}
+                                    </select>
+                                </label>
+                            </div>
                         </div>
                         <div class="footerButtons">
                             <button class="submitButton">Update Endpoint</button>
@@ -111,6 +118,14 @@
         justify-content: center;
     }
 
+    .modalData {
+        min-height: 400px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 10px;
+    }
+
     table {
         border-collapse: collapse;
         width: 100%;
@@ -125,6 +140,14 @@
 
     tr:nth-child(even) {
         background-color: #dddddd;
+    }
+
+    .fileChoose {
+        font-size: 0.9rem;
+        padding: 7px;
+        border-radius: 5px;
+        background-color: #f4f4f5;
+        border: 1px solid #cfcdcd;
     }
 
     .button {
