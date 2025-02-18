@@ -5,6 +5,7 @@ import (
 	"log"
 	"myapp/funcs"
 	"myapp/routes"
+	"net/http"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
@@ -18,7 +19,18 @@ func main() {
 		registry := template.NewRegistry()
 
 		se.Router.GET("/admin/", func(e *core.RequestEvent) error {
-			return funcs.RenderAdminPage(app, registry, e)
+			success := e.Request.URL.Query().Get("success")
+			errorParam := e.Request.URL.Query().Get("error")
+
+			return funcs.RenderAdminPage(app, registry, e, funcs.DetermineSuccessMessage(success), funcs.DetermineErrorMessage(errorParam))
+		})
+
+		se.Router.POST("/admin/", func(e *core.RequestEvent) error {
+			success := e.Request.URL.Query().Get("success")
+			errorParam := e.Request.URL.Query().Get("error")
+
+			fmt.Println(funcs.DetermineSuccessMessage(success))
+			return funcs.RenderAdminPage(app, registry, e, funcs.DetermineSuccessMessage(success), funcs.DetermineErrorMessage(errorParam))
 		})
 
 		se.Router.POST("/admin/path/{id}", func(e *core.RequestEvent) error {
@@ -35,13 +47,13 @@ func main() {
 
 			if err := e.BindBody(&data); err != nil {
 				fmt.Println(err)
-				return funcs.RenderAdminPage(app, registry, e)
+				return e.Redirect(http.StatusPermanentRedirect, "/admin?error=UPDATE_PATH_INVALID_PARAMS")
 			}
 
 			record, err := app.FindRecordById("routes", id)
 			if err != nil {
 				fmt.Println("s", err)
-				return funcs.RenderAdminPage(app, registry, e)
+				return e.Redirect(http.StatusPermanentRedirect, "/admin?error=UPDATE_PATH_NONEXISTANT")
 			}
 
 			record.Set("httpMethod", data.HttpMethod)
@@ -55,9 +67,18 @@ func main() {
 			err = app.Save(record)
 			if err != nil {
 				fmt.Println("f", err)
+				return e.Redirect(http.StatusPermanentRedirect, "/admin?error=UPDATE_PATH")
 			}
 
-			return funcs.RenderAdminPage(app, registry, e)
+			return e.Redirect(http.StatusPermanentRedirect, "/admin?success=UPDATED_PATH")
+		})
+
+		se.Router.POST("/admin/deletePath/{id}", func(e *core.RequestEvent) error {
+			id := e.Request.PathValue("id")
+
+			fmt.Println(id)
+
+			return e.Redirect(http.StatusPermanentRedirect, "/admin?success=DELETED_PATH")
 		})
 
 		routes.BaseRoute(se, app, registry)

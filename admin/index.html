@@ -82,7 +82,7 @@
                         <label class="button" for="showModal{{ $element.id }}">
                             Edit
                         </label>
-                        <form action="/admin/paths/{{ $element.id }}" method="post">
+                        <form action="/admin/deletePath/{{ $element.id }}" method="POST">
                             <button class="deleteButton">Delete</button>
                         </form>
                     </td>
@@ -90,6 +90,8 @@
             {{ end }}
         </table>
     </main>
+    {{ if eq .error true }}<p class="toast toastError">{{ .errorMsg }}</p>{{ end }}
+    {{ if eq .success true }}<p class="toast">{{ .successMsg }}</p>{{ end }}
 </body>
 <style>
     *, *::before, *::after {
@@ -307,6 +309,36 @@
         cursor: pointer;
         opacity: 1;
         text-align: center;
+    }
+
+    @keyframes showHide {
+        0% {transform: translateY(calc(100% + 20px))}
+        1% {transform: translateY(-15px)}
+        2% {transform: translateY(0)}
+        98% {transform: translateY(0)}
+        99% {transform: translateY(-15px)}
+        100%{transform: translateY(calc(100% + 20px))}
+    }
+
+    .toast {
+        font-size: 1rem;
+        font-weight: 500;
+        display:block;
+        width:fit-content;
+        padding: 15px;
+        background-color:#b0edb0;
+        min-width: 300px;
+        border-radius: 5px;
+        outline:2px solid #5abd5a;
+        position:fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 201;
+        animation: showHide 10s linear forwards;
+    }
+    .toastError {
+        background-color: #ff6b6b;
+        outline: 2px solid #873333;
     }
 </style>
 </html>

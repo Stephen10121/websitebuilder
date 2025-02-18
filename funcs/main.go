@@ -80,7 +80,7 @@ func ReturnCorrectResponse(record *core.Record, e *core.RequestEvent, registry *
 	}
 }
 
-func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e *core.RequestEvent) error {
+func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e *core.RequestEvent, successMsg string, errorMsg string) error {
 	records, _ := app.FindAllRecords("routes")
 	newRecords := []any{}
 	for _, record := range records {
@@ -98,8 +98,12 @@ func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e 
 	}
 
 	data := map[string]any{
-		"records": newRecords,
-		"files":   FetchAllPublicFiles(),
+		"records":    newRecords,
+		"files":      FetchAllPublicFiles(),
+		"success":    len(successMsg) > 0 && len(errorMsg) == 0,
+		"successMsg": successMsg,
+		"error":      len(errorMsg) > 0,
+		"errorMsg":   errorMsg,
 	}
 
 	html, err := registry.LoadFiles("./admin/index.html").Render(data)
@@ -124,4 +128,28 @@ func FetchAllPublicFiles() []string {
 		files = append(files, file.Name())
 	}
 	return files
+}
+
+func DetermineSuccessMessage(msg string) string {
+	switch msg {
+	case "DELETED_PATH":
+		return "Successfully Deleted a path."
+	case "UPDATED_PATH":
+		return "Successfully Updated a path."
+	default:
+		return ""
+	}
+}
+
+func DetermineErrorMessage(msg string) string {
+	switch msg {
+	case "UPDATE_PATH_NONEXISTANT":
+		return "Path doesn't exist."
+	case "UPDATE_PATH_INVALID_PARAMS":
+		return "Invalid parameters."
+	case "UPDATE_PATH":
+		return "Failed to update the path."
+	default:
+		return ""
+	}
 }
