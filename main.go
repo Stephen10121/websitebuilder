@@ -30,6 +30,7 @@ func main() {
 				StringMessage   string `json:"stringMessage" form:"stringMessage"`
 				TemplateMessage string `json:"templateMessage" form:"templateMessage"`
 				FileServePath   string `json:"fileServePath" form:"fileServePath"`
+				Path            string `json:"path" form:"path"`
 			}{}
 
 			if err := e.BindBody(&data); err != nil {
@@ -37,7 +38,24 @@ func main() {
 				return funcs.RenderAdminPage(app, registry, e)
 			}
 
-			fmt.Println(id, data.FileServePath, data.HttpMethod, data.JSONMessage, data.Serve, data.StringMessage, data.TemplateMessage)
+			record, err := app.FindRecordById("routes", id)
+			if err != nil {
+				fmt.Println("s", err)
+				return funcs.RenderAdminPage(app, registry, e)
+			}
+
+			record.Set("httpMethod", data.HttpMethod)
+			record.Set("serve", data.Serve)
+			record.Set("jsonMessage", data.JSONMessage)
+			record.Set("stringMessage", data.StringMessage)
+			record.Set("templateMessage", data.TemplateMessage)
+			record.Set("fileServePath", data.FileServePath)
+			record.Set("path", data.Path)
+
+			err = app.Save(record)
+			if err != nil {
+				fmt.Println("f", err)
+			}
 
 			return funcs.RenderAdminPage(app, registry, e)
 		})

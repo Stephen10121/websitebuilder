@@ -17,6 +17,7 @@
                     <div>
                         <p class="title">Edit Data for "{{ $element.path }}" path</p>
                         <form class="editForm" method="POST" action="/admin/path/{{ $element.id }}">
+                            <input type="hidden" name="path" value="{{ $element.path }}" />
                             <p class="titleLabel">HTTP Method</p>
                             <div class="tabs">
                                 <label title="Choose HTTP Method"><input type="radio" name="httpMethod" class="sr-only" {{ if eq .httpMethod "GET" }}checked{{ end }} value="GET" /><p>GET</p></label>
