@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -101,6 +102,7 @@ func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e 
 	html, err := registry.LoadFiles("./admin/index.html").Render(data)
 
 	if err != nil {
+		fmt.Println(err)
 		return e.Error(http.StatusNotFound, "Page not found.", nil)
 	}
 
