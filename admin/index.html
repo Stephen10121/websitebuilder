@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/modal.css">
+    <link rel="stylesheet" href="/modal.css" />
     <title>Admin Page</title>
 </head>
 <body>
@@ -68,17 +68,17 @@
     <main>
         <table>
             <tr>
-                <th>Path</th>
+                <th style="width:30%">Path</th>
                 <th>Serve Type</th>
                 <th>HTTP Method</th>
-                <th>Actions</th>
+                <th style="width: 10%;">Actions</th>
             </tr>
             {{ range $index, $element := .records }}
                 <tr>
-                    <td>{{ $element.path }}</td>
+                    <td><a href="{{ $element.path }}" target="_blank" title="Open in new tab.">{{ $element.path }}</a></td>
                     <td>{{ $element.serve }}</td>
                     <td>{{ $element.httpMethod }}</td>
-                    <td style="display: flex; gap:5px;">
+                    <td style="display: flex; gap:5px;justify-content: center;">
                         <label class="button" for="showModal{{ $element.id }}">
                             Edit
                         </label>
@@ -88,6 +88,13 @@
                     </td>
                 </tr>
             {{ end }}
+            <tr>
+                <td colspan="4">
+                    <div style="width: 100%;display: flex;align-items: center;justify-content: center;">
+                        <button class="button newPath">New Path</button>
+                    </div>
+                </td>
+            </tr>
         </table>
     </main>
     {{ if eq .error true }}<p class="toast toastError">{{ .errorMsg }}</p>{{ end }}
@@ -99,7 +106,6 @@
         margin: 0;
         box-sizing: border-box;
         font-family: geist-sans, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
-        width:100%;
     }
 
     html,
@@ -127,6 +133,12 @@
         justify-content: space-between;
         flex-direction: column;
         padding: 10px;
+    }
+
+    a {
+        color: #000000;
+        display: block;
+        width: fit-content;
     }
 
     table {
@@ -163,6 +175,15 @@
         transition: opacity 0.15s linear;
     }
 
+    .newPath {
+        border: 0;
+        background-color: #000000;
+        color: #ffffff;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 10px 15px;
+    }
+
     .deleteButton {
         color: #f3f3f3;
         background-color: rgb(161, 27, 27);
@@ -182,6 +203,7 @@
         position: absolute;
         top: 10px;
         left: 10px;
+        width: 100%;
     }
 
     .titleLabel {
@@ -250,6 +272,7 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
         border-radius:5px;
         padding: 0 5px;
+        width: 100%;
     }
 
     .sr-only {
@@ -295,6 +318,7 @@
         display: grid;
         grid-template-columns: 4fr 1fr;
         column-gap: 5px;
+        padding: 0 10px 7px 10px;
     }
 
     .footerButtons label {
