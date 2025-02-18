@@ -49,8 +49,8 @@
                                     <p class="titleLabel">Choose which file to serve</p>
                                     <select name="fileServePath" class="fileChoose">
                                         <option value=""></option>
-                                        {{ range $index, $element := $.files }}
-                                            <option value="{{$element}}">{{$element}}</option>
+                                        {{ range $index, $file := $.files }}
+                                            <option value="{{$file}}" {{ if eq $element.fileServePath $file }}selected{{ end }}>{{$file}}</option>
                                         {{ end }}
                                     </select>
                                 </label>
