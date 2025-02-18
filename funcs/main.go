@@ -108,3 +108,17 @@ func RenderAdminPage(app *pocketbase.PocketBase, registry *template.Registry, e 
 
 	return e.HTML(http.StatusOK, html)
 }
+
+func FetchAllPublicFiles() []string {
+	filesInDir, err := os.ReadDir("./files/")
+	if err != nil {
+		fmt.Println(err)
+		return []string{}
+	}
+
+	var files []string
+	for _, file := range filesInDir {
+		files = append(files, file.Name())
+	}
+	return files
+}
