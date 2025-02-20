@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"myapp/funcs"
+	"myapp/initializers"
 	"myapp/routes"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	initializers.SetupEnv()
 	app := pocketbase.New()
 	allRoutes := make(map[string]*core.Record)
 

@@ -2,6 +2,7 @@ package funcs
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 
@@ -136,6 +137,8 @@ func DetermineSuccessMessage(msg string) string {
 		return "Successfully Deleted a path."
 	case "UPDATED_PATH":
 		return "Successfully Updated a path."
+	case "LOGGED_IN":
+		return "Successfully logged in!"
 	default:
 		return ""
 	}
@@ -149,6 +152,8 @@ func DetermineErrorMessage(msg string) string {
 		return "Invalid parameters."
 	case "UPDATE_PATH":
 		return "Failed to update the path."
+	case "INVALID_LOGIN_PARAMETERS":
+		return "Invalid Login parameters."
 	default:
 		return ""
 	}
@@ -166,4 +171,34 @@ func GetAllRoutes(app *pocketbase.PocketBase, allRoutes *map[string]*core.Record
 	for _, record := range records {
 		(*allRoutes)[record.GetString("path")+record.GetString("httpMethod")] = record
 	}
+}
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func RandStringBytes(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
+}
+
+func RenderLoginPage(registry *template.Registry, e *core.RequestEvent) error {
+	successMsg := DetermineSuccessMessage(e.Request.URL.Query().Get("success"))
+	errorMsg := DetermineErrorMessage(e.Request.URL.Query().Get("error"))
+
+	data := map[string]any{
+		"success":    len(successMsg) > 0 && len(errorMsg) == 0,
+		"successMsg": successMsg,
+		"error":      len(errorMsg) > 0,
+		"errorMsg":   errorMsg,
+	}
+	html, err := registry.LoadFiles("./admin/login.html").Render(data)
+
+	if err != nil {
+		fmt.Println(err)
+		return e.Error(http.StatusInternalServerError, "Internal Server Error.", nil)
+	}
+
+	return e.HTML(http.StatusOK, html)
 }

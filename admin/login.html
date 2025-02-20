@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/modal.css" />
+    <title>Login | Admin Page</title>
+</head>
+<body>
+    <main>
+        <form method="POST" action="/admin/login">
+            <p class="title">Restricted Access</p>
+            <div class="inputs">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder='e.g. "bob10121"' />
+            </div>
+            <div class="inputs">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder='e.g. "bobisawesome!"' />
+            </div>
+            <div class="footerButtons">
+                <button class="submitButton">Login</button>
+            </div>
+        </form>
+    </main>
+    {{ if eq .error true }}<p class="toast toastError">{{ .errorMsg }}</p>{{ end }}
+    {{ if eq .success true }}<p class="toast">{{ .successMsg }}</p>{{ end }}
+</body>
+<style>
+    *, *::before, *::after {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: geist-sans, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+    }
+
+    html,
+    body {
+        background-color: #ffffff;
+    }
+
+    body {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    main {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    form {
+    	width: 100%;
+        max-width: var(--modal-max-width, 425px);
+        background-color: var(--modal-background-color, #ffffff);
+        border-radius: .5rem;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px, rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 10px;
+    }
+    
+    .inputs {
+    	width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        width: 100%;
+        font-weight: bold;
+        font-size: 0.8rem;
+        margin-top: 10px;
+    }
+    
+    
+    input {
+    	padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #808080;
+    }
+
+    .title {
+        font-weight: bold;
+        font-size: 1.2rem;
+        text-align: center;
+        top: 10px;
+        left: 10px;
+        width: 100%;
+    }
+
+    .submitButton {
+        width: 100%;
+        padding: 10px;
+        border-radius: 100vh;
+        border: none;
+        background-color: #000000;
+        color: #ffffff;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: 1;
+        transition: opacity 0.15s linear;
+    }
+
+    .submitButton:hover {
+        opacity: 0.85;
+    }
+
+    .footerButtons {
+        margin-top: 10px;
+        column-gap: 5px;
+    }
+
+    @keyframes showHide {
+        0% {transform: translateY(calc(100% + 20px))}
+        1% {transform: translateY(-15px)}
+        2% {transform: translateY(0)}
+        98% {transform: translateY(0)}
+        99% {transform: translateY(-15px)}
+        100%{transform: translateY(calc(100% + 20px))}
+    }
+
+    .toast {
+        font-size: 1rem;
+        font-weight: 500;
+        display:block;
+        width:fit-content;
+        padding: 15px;
+        background-color:#b0edb0;
+        min-width: 300px;
+        border-radius: 5px;
+        outline:2px solid #5abd5a;
+        position:fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 201;
+        animation: showHide 10s linear forwards;
+    }
+    
+    .toastError {
+        background-color: #ff6b6b;
+        outline: 2px solid #873333;
+    }
+</style>
+</html>
