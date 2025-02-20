@@ -153,3 +153,17 @@ func DetermineErrorMessage(msg string) string {
 		return ""
 	}
 }
+
+func GetAllRoutes(app *pocketbase.PocketBase, allRoutes *map[string]*core.Record) {
+	records, err := app.FindAllRecords("routes")
+	*allRoutes = make(map[string]*core.Record)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for _, record := range records {
+		(*allRoutes)[record.GetString("path")+record.GetString("httpMethod")] = record
+	}
+}
