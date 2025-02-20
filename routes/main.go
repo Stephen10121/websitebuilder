@@ -149,7 +149,15 @@ func AdminRoutes(se *core.ServeEvent, app *pocketbase.PocketBase, registry *temp
 	g.POST("/deletePath/{id}", func(e *core.RequestEvent) error {
 		id := e.Request.PathValue("id")
 
-		fmt.Println(id)
+		record, err := app.FindRecordById("routes", id)
+		if err != nil {
+			return e.Redirect(http.StatusPermanentRedirect, "/admin?error=RECORD_NONEXISTANT")
+		}
+
+		err = app.Delete(record)
+		if err != nil {
+			return e.Redirect(http.StatusPermanentRedirect, "/admin?error=RECORD_DELETE")
+		}
 
 		go func() {
 			funcs.GetAllRoutes(app, allRoutes)

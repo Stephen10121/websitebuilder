@@ -154,6 +154,10 @@ func DetermineErrorMessage(msg string) string {
 		return "Failed to update the path."
 	case "INVALID_LOGIN_PARAMETERS":
 		return "Invalid Login parameters."
+	case "RECORD_NONEXISTANT":
+		return "The record doesn't exist!"
+	case "RECORD_DELETE":
+		return "Failed to delete record!"
 	default:
 		return ""
 	}
